@@ -16,17 +16,13 @@ IsValidLength ← = WordLen ⧻
 IsLowerChar ← (× ≥ @a ∶ ≤ @z .)
 IsLowerString ← /× ∵IsLowerChar
 
-InWordList ← (∊∶⍚1 Words .)
+InWordList ← (∊∶ Words .)
 
 Validators ← [(IsValidLength) (InWordList) (IsLowerString)]
 
 IsValidInput ← (/× ∵(|1 !) Validators .)
 
-# TODO: allow \e escape code
-Escape ← + 27 @\0
-
-PrintBanner ← (|0
-  ⍥Escape 7
+PrintBanner ← (|0.0
   WordLen
   &p $ uordle: wordle written in uiua.
      $ 
@@ -34,9 +30,9 @@ PrintBanner ← (|0
      $ 
      $ * type words in lower case
      $ * words must be _ characters long
-     $ * _[42;30m green  _[0m means correct character is in the right spot
-     $ * _[43;30m yellow _[0m means correct character is in the wrong spot
-     $ * _[48;5;240m_[30m gray   _[0m means incorrect character
+     $ * \x1b[42;30m green  \x1b[0m means correct character is in the right spot
+     $ * \x1b[43;30m yellow \x1b[0m means correct character is in the wrong spot
+     $ * \x1b[48;5;240m\x1b[30m gray   \x1b[0m means incorrect character
      $ 
      $ type a word to get started
 )
@@ -63,9 +59,9 @@ GetLetterMask ← (
 )
 
 ColorMappings ← [
-  ($"_[48;5;240m_[30m _ _[0m" Escape Escape ∶ Escape)
-  ($"_[43;30m _ _[0m" Escape ∶ Escape)
-  ($"_[42;30m _ _[0m" Escape ∶ Escape)
+  ($"\x1b[48;5;240m\x1b[30m _ \x1b[0m")
+  ($"\x1b[43;30m _ \x1b[0m")
+  ($"\x1b[42;30m _ \x1b[0m")
 ]
 GetColorMapping ← (⊏ ∶ ColorMappings)
 
@@ -80,11 +76,11 @@ MainLoop ← (|1.0
   &p $"\nyou have _ attempts left"
 
   ⍥(PromptForValidWord) ∞
-  .
 
-  PrintColors
+  PrintColors .
 
-  ?Win ∘ ≅ SecretWord
+  # BUG: I cannot seem to use void funcs here anymore
+  ;?Win(1) ≅ SecretWord
 )
 
 PrintBanner
